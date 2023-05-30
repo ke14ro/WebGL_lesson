@@ -148,10 +148,10 @@
         scene.add( sphere );
 
         //ドーナツ
-        var torusGeometry = new THREE.TorusGeometry( 0.3, 0.05, 6, 12 );
-        var torusMaterial = new THREE. MeshPhongMaterial( { color: 0x0000ff } );
+        var torusGeometry = new THREE.TorusGeometry( 0.5, 0.2, 6, 12 );
+        var torusMaterial = new THREE. MeshPhongMaterial( { color: 0xffff00 } );
         var torus = new THREE.Mesh( torusGeometry, torusMaterial );
-        torus.position.set( -1.5, 0, 0);
+        torus.position.set( 0, 0, 4);
         scene.add( torus );
 
         //なんかクネクネしてるやつ
@@ -173,10 +173,13 @@
           box.rotation.x += 0.01;
           box.rotation.y += 0.01;
 
+          //下の板を回転させる
           plane2.rotation.x -=0.01
 
-          torus.rotation.x -=0.01;
+          //ドーナツを奥に移動させる
+          torus.position.z -=0.01;
 
+          //グループ化した円柱を回転させる
           group.rotation.y += 0.01;
           group2.rotation.y -= 0.01;
 
