@@ -1,0 +1,187 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <script src="https://unpkg.com/three@0.137.4/build/three.min.js"></script>
+    <script src="https://unpkg.com/three@0.137.4/examples/js/controls/OrbitControls.js"></script>
+  </head>
+<body>
+ <script>
+      // ページの読み込みを待つ
+      window.addEventListener('DOMContentLoaded', init);
+
+      function init() {
+        // サイズを指定
+        const width = 800
+        const height = 600;
+
+        // レンダラーを作成
+        var renderer = new THREE.WebGLRenderer();
+        document.body.appendChild(renderer.domElement);
+        renderer.setSize(width, height);
+
+        // レンダラー：シャドウを有効にする
+        renderer.shadowMap.enabled = true;
+
+        // シーンを作成
+        const scene = new THREE.Scene();
+
+        // カメラを作成
+        const camera = new THREE.PerspectiveCamera(45, width / height);
+        // カメラの初期座標を設定
+        camera.position.set(0, 0, 5);
+
+        // カメラコントローラーを作成
+        const controls = new THREE.OrbitControls(camera, document.body); 
+        
+        // 平行光源1
+        var directionalLight1 = new THREE.DirectionalLight(0xffffff);
+        directionalLight1.position.set(10, 10, 10);
+        // シーンに追加
+        scene.add(directionalLight1);
+        // 平行光源2
+        var directionalLight2 = new THREE.DirectionalLight(0x888888);
+        directionalLight2.position.set(-10, -10, 10);
+        // シーンに追加
+        scene.add(directionalLight2);
+
+        // helper
+        const gridHelper = new THREE.GridHelper(2,10); // size, step
+        scene.add(gridHelper);
+        const axisHelper = new THREE.AxisHelper(2); //軸の長さ　X：赤、Y：緑、z：青
+        scene.add(axisHelper);
+
+        // spot照明を作成
+        const spotlight = new THREE.SpotLight(0xFFFFFF, 2, 30, Math.PI / 4, 1);
+        spotlight.position.set(0,3,2);
+        // ライトに影を有効にする
+        spotlight.castShadow = true;
+        scene.add(spotlight);
+
+        // 箱を作成
+        var geometry = new THREE.BoxGeometry(1, 1, 1);
+        var material = new THREE.MeshLambertMaterial({ color: 0xfff8dc });
+        var box = new THREE.Mesh(geometry, material);
+        box.position.set(1,0,0); //位置を指定
+        scene.add(box);   // シーンに追加
+
+        //平面を作成
+        var geometry = new THREE.PlaneGeometry( 3, 3, 1, 1 );
+        var material = new THREE.MeshPhongMaterial( {color: 0x00ffff, side: THREE.DoubleSide} );
+        var plane = new THREE.Mesh( geometry, material );
+        plane.position.x = 0;
+        scene.add( plane );
+
+        // 影を受け付ける
+        plane.receiveShadow = true;
+        scene.add(plane);
+
+        var geometry = new THREE.PlaneGeometry( 3, 1, 1, 1 );
+        var material = new THREE.MeshPhongMaterial( {color: 0x000080, side: THREE.DoubleSide} );
+        var plane2 = new THREE.Mesh( geometry, material );
+        plane2.position.y = -1.5;
+        scene.add( plane2 );
+
+        // 照明を作成
+        const light = new THREE.PointLight(0xFF0000, 10, 30, 10, 1);
+        light.position.set(0,-1,4);
+        // ライトに影を有効にする
+        light.castShadow = true;
+        scene.add(light);
+
+        // グループを作る
+      const group = new THREE.Group();
+      // 3D空間にグループを追加する
+      scene.add(group);
+
+      for (let i = 0; i < 5; i++) {
+        //角柱〜円柱
+        const cylinderGeometry = new THREE.CylinderGeometry( 0.1, 0.3, 0.5, 8 );
+        const cylinderMaterial = new THREE.MeshPhongMaterial( {color: 0x0000ff} );
+        const cylinder = new THREE.Mesh( cylinderGeometry, cylinderMaterial );
+
+
+        // 配置座標を計算
+        const radian = (i / 5) * Math.PI * 2;
+        cylinder.position.set(
+          2 * Math.cos(radian), // X座標
+          0, // Y座標
+          2 * Math.sin(radian) // Z座標
+        );
+
+        // グループに追加する
+        group.add(cylinder);
+      }
+
+      // 影を落とす
+    group.castShadow = true;
+    scene.add(group);
+
+      // グループを作る
+      const group2 = new THREE.Group();
+      // 3D空間にグループを追加する
+      scene.add(group2);
+      for (let i = 0; i < 5; i++) {
+        //角柱〜円柱
+        const cylinderGeometry = new THREE.CylinderGeometry( 0.1, 0.3, 0.5, 8 );
+        const cylinderMaterial = new THREE.MeshPhongMaterial( {color: 0xffffff} );
+        const cylinder = new THREE.Mesh( cylinderGeometry, cylinderMaterial );
+
+
+        // 配置座標を計算
+        const radian = ((2*i+1) / 10) * Math.PI * 2;
+        cylinder.position.set(
+          2 * Math.cos(radian), // X座標
+          0, // Y座標
+          2 * Math.sin(radian) // Z座標
+        );
+
+        // グループに追加する
+        group2.add(cylinder);
+      }
+
+
+        //球
+        var sphereGeometry = new THREE.SphereGeometry( 0.5, 32, 32 );
+        var sphereMaterial = new THREE. MeshPhongMaterial( {color: 0xff69b4,wireframe: true} );
+        var sphere = new THREE.Mesh( sphereGeometry, sphereMaterial );
+        sphere.position.set( 1.5, 3, -5 );
+        scene.add( sphere );
+
+        //ドーナツ
+        var torusGeometry = new THREE.TorusGeometry( 0.3, 0.05, 6, 12 );
+        var torusMaterial = new THREE. MeshPhongMaterial( { color: 0x0000ff } );
+        var torus = new THREE.Mesh( torusGeometry, torusMaterial );
+        torus.position.set( -1.5, 0, 0);
+        scene.add( torus );
+
+        //なんかクネクネしてるやつ
+        var torusKnotGeometry = new THREE.TorusKnotGeometry( 1.5, 0.3, 20, 6, 3, 2 );
+        var torusKnotMaterial = new THREE. MeshPhongMaterial( { color: 0xba55d3, wireframe: true } );
+        var torusKnot = new THREE.Mesh( torusKnotGeometry, torusKnotMaterial );
+        torusKnot.position.set( 0, 0, 0 );
+        scene.add( torusKnot );
+
+        update();
+
+        // 毎フレーム時に実行されるループイベントです
+        function update() {
+          // レンダリング
+          renderer.render(scene, camera);
+          requestAnimationFrame(update);
+          
+           // 箱を回転させる
+          box.rotation.x += 0.01;
+          box.rotation.y += 0.01;
+
+          plane2.rotation.x -=0.01
+
+          torus.rotation.x -=0.01;
+
+          group.rotation.y += 0.01;
+          group2.rotation.y -= 0.01;
+
+        }
+      }
+    </script>
+</body>
+</html>
