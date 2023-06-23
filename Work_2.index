@@ -1,0 +1,177 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <script src="https://unpkg.com/three@0.137.4/build/three.min.js"></script>
+    <script src="https://unpkg.com/three@0.137.4/examples/js/controls/OrbitControls.js"></script>
+  </head>
+<body>
+ <script>
+      // ページの読み込みを待つ
+      window.addEventListener('DOMContentLoaded', init);
+
+      function init() {
+        // サイズを指定
+        const width = 800
+        const height = 600;
+
+        // レンダラーを作成
+        var renderer = new THREE.WebGLRenderer();
+        document.body.appendChild(renderer.domElement);
+        renderer.setSize(width, height);
+
+        // 背景の色を設定
+        renderer.setClearColor(0xffffdd);
+
+        // シーンを作成
+        const scene = new THREE.Scene();
+
+        // カメラを作成
+        const camera = new THREE.PerspectiveCamera(45, width / height);
+        // カメラの初期座標を設定
+        camera.position.set(0, 0, 5);
+
+        // カメラコントローラーを作成
+        const controls = new THREE.OrbitControls(camera, document.body); 
+        
+        // 平行光源1
+        //var directionalLight1 = new THREE.DirectionalLight(0xffffff);
+        //directionalLight1.position.set(10, 10, 10);
+        // シーンに追加
+        //scene.add(directionalLight1);
+        // 平行光源2
+        //var directionalLight2 = new THREE.DirectionalLight(0x888888);
+        //directionalLight2.position.set(-10, -10, 10);
+        // シーンに追加
+        //scene.add(directionalLight2);
+
+
+        // helper
+        const gridHelper = new THREE.GridHelper(2,10); // size, step
+        scene.add(gridHelper);
+        const axisHelper = new THREE.AxisHelper(2); //軸の長さ　X：赤、Y：緑、z：青
+        scene.add(axisHelper);
+
+        // テクスチャー読み込み
+        var textureLoader = new THREE.TextureLoader();
+        var texture = textureLoader.load("cit.png");
+        var mat = new THREE.MeshPhongMaterial({transparent: true});
+        mat.map = texture;
+
+        // テクスチャー読み込み
+        var texture1 = textureLoader.load("stone.jpg");
+        var mat1 = new THREE.MeshPhongMaterial();
+        mat1.map = texture1;
+        // バンプマップ読み込み
+        var bump = textureLoader.load("stone-bump.jpg");
+        mat1.bumpMap = bump;
+        mat1.bumpscale = 0.2;
+
+        //砂
+        var sunatx = textureLoader.load("suna.jpg");
+        var suna = new THREE.MeshPhongMaterial();
+        suna.map = sunatx;
+
+        //太陽
+        var suntx = textureLoader.load("sun.jpg");
+        var sun = new THREE.MeshPhongMaterial();
+        sun.map = suntx;
+
+        //月
+        var moontx = textureLoader.load("img/moon.jpg");
+        var moon = new THREE.MeshPhongMaterial();
+        moon.map = moontx;
+
+        //箱
+        var geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
+        var box = new THREE.Mesh(geometry, mat);
+        box.position.x = -1.5;
+        box.position.z = -1.5;
+        scene.add(box);
+
+        //角すい〜円すい（ピラミッド）
+        var coneGeometry = new THREE.ConeGeometry( 0.5, 1, 5 ); 
+        //var coneMaterial = new THREE. MeshPhongMaterial( {color: 0x0000ff} );
+        var cone = new THREE.Mesh( coneGeometry, mat1 );
+        cone.position.set( 0, 0.5, 0 );
+        scene.add( cone );
+
+        //球（月と太陽）
+        const group = new THREE.Group();
+        scene.add(group);
+        var sphereGeometry = new THREE.SphereGeometry( 0.5, 32, 32 ); 
+        var sphere1 = new THREE.Mesh( sphereGeometry, sun );
+        sphere1.position.set( 2.3, 0, 0 );
+        scene.add( sphere1 );
+        group.add(sphere1);
+
+        // スポットライト光源を作成
+        // new THREE.SpotLight(色, 光の強さ, 距離, 角度, ボケ具合, 減衰率)
+        const light = new THREE.SpotLight(0xff5000, 1, 50, Math.PI / 4, 0, 0.5);
+        light.position.set( 2.3, 0, 0 );
+        scene.add(light);
+        group.add(light);
+        
+        var sphereGeometry = new THREE.SphereGeometry( 0.5, 32, 32 ); 
+        var sphere2 = new THREE.Mesh( sphereGeometry, moon );
+        sphere2.position.set( -2.3, 0, 0 );
+        scene.add( sphere2 );
+        group.add(sphere2);
+
+        const light2 = new THREE.SpotLight(0xffffff, 1, 50, Math.PI / 4, 0, 0.5);
+        light2.position.set( -2.3, 0, 0 );
+        scene.add(light2);
+        group.add(light2);
+
+        // 平面を作成
+        var planeGeometry = new THREE.PlaneGeometry(5,5,5,5);
+        var plane = new THREE.Mesh(planeGeometry,suna);
+        plane.rotation.set( -Math.PI/2, 0, 0 );
+        plane.position.set(0,0,0);
+        scene.add(plane);
+
+
+        // ラクダをスプライトで作成
+        var textureLoader = new THREE.TextureLoader();  
+        var texture = textureLoader.load("img/camel-2.png");
+        const material = new THREE.SpriteMaterial({ map: texture,});
+
+        // 複数のラクダ
+        for (let i = 0; i < 5; i++) {
+          const sprite = new THREE.Sprite(material);
+          // ランダムな座標に配置
+          sprite.position.x = 3 * (Math.random() - 0.5);
+          sprite.position.y = 0.15 ;
+          sprite.position.z = 3 * (Math.random() - 0.5);
+          // スケールを調整
+          sprite.scale.set(0.5, 0.5, 0.5);
+          scene.add(sprite);
+        }
+
+        var sprite2 = new THREE.Sprite(material);
+        sprite2.scale.set(0.7,1.4,0.7);
+        sprite2.position.set(1,0.4,0); //位置を指定
+        scene.add(sprite2);
+
+
+        update();
+
+        // 毎フレーム時に実行されるループイベントです
+        function update() {
+          // レンダリング
+          renderer.render(scene, camera);
+
+          
+
+          requestAnimationFrame(update);
+
+          // 全体を回転させる
+          cone.rotation.y += 0.01;
+          //group.rotation.z += 0.01;
+          group.rotation.z += 0.01;
+
+          
+
+        }
+      }
+    </script>
+</body>
