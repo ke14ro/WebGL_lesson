@@ -1,11 +1,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <script src="https://unpkg.com/three@0.137.4/build/three.min.js"></script>
-    <script src="https://unpkg.com/three@0.137.4/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/110/three.min.js"></script>
     <script src="OrbitControls.js"></script>
-  </head>
-<body>
     <script>
       // ページの読み込みを待つ
       window.addEventListener('load', init);
@@ -42,40 +39,18 @@
         const axisHelper = new THREE.AxisHelper(1000); //軸の長さ　X：赤、Y：緑、z：青
         scene.add(axisHelper);
 
-        // texture作成
-        var textureLoader = new THREE.TextureLoader();
-        var girltexture = textureLoader.load("girl.png");
-        var housetexture = textureLoader.load("house.png");
-        const material2 = new THREE.SpriteMaterial({ map: girltexture,});
-        var snowtexture = textureLoader.load("snow.jpg");
-
-        // 平面（ポリゴン）を作成
-        
-
-        var sprite = new THREE.Sprite(material2);
-        sprite.scale.set(130,150,100);
-        sprite.position.set(150,70,300); 
-        scene.add( sprite );
-        
-        var housegeometry = new THREE.PlaneGeometry(690,575);
-        var housemat = new THREE.MeshBasicMaterial({transparent:true});
-        housemat.map= housetexture;
-        var houseplane = new THREE.Mesh( housegeometry, housemat );
-        houseplane.position.set(0, 240, 0);
-        scene.add( houseplane );
-
         // グループを作成
         const group = new THREE.Group();
         scene.add(group);
-        const geometry = new THREE.SphereGeometry(3, 16, 16);
+        const geometry = new THREE.BoxGeometry(50, 50, 50);
         //const geometry = new THREE.BoxBufferGeometry(50, 50, 50);
-        const material = new THREE.MeshStandardMaterial({color: 0xffffff});
+        const material = new THREE.MeshStandardMaterial();
 
         for (let i = 0; i < 1000; i++) {
           const mesh = new THREE.Mesh(geometry, material);
-          mesh.position.x = (Math.random() - 0.5) * 1000;
-          mesh.position.y = (Math.random() - 0.5) * 1000;
-          mesh.position.z = (Math.random() - 0.5) * 1000;
+          mesh.position.x = (Math.random() - 0.5) * 2000;
+          mesh.position.y = (Math.random() - 0.5) * 2000;
+          mesh.position.z = (Math.random() - 0.5) * 2000;
           mesh.rotation.x = Math.random() * 2 * Math.PI;
           mesh.rotation.y = Math.random() * 2 * Math.PI;
           mesh.rotation.z = Math.random() * 2 * Math.PI;
@@ -89,7 +64,7 @@
         scene.add(ambientLight);
 
         // 平行光源
-        var directionalLight1 = new THREE.DirectionalLight(0xffffff,5);
+        var directionalLight1 = new THREE.DirectionalLight(0xffffff,0.5);
         directionalLight1.position.set(1000, 1000, 700);
         // シーンに追加
         scene.add(directionalLight1);
@@ -101,15 +76,13 @@
         function tick() {
           // レンダリング
           group.rotateX(0.01);
-          group.rotateY(0.002);
           renderer.render(scene, camera);
           requestAnimationFrame(tick);
         }
       }
     </script>
-  
+  </head>
   <body>
     <canvas id="myCanvas"></canvas>
-  </body>
   </body>
 </html>
