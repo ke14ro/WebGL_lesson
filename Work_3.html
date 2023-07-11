@@ -47,13 +47,7 @@
         var snowtexture = textureLoader.load("snow.jpg");
 
         // 平面（ポリゴン）を作成
-        var snow = new THREE.MeshPhongMaterial();
-        snow.map = snowtexture;
-        var planeGeometry = new THREE.PlaneGeometry(1000,1000,1000,1000);
-        var plane = new THREE.Mesh(planeGeometry,snow);
-        plane.rotation.set( -Math.PI/2, 0, 0 );
-        plane.position.set(0,0,0);
-        scene.add(plane);
+        
 
         var sprite = new THREE.Sprite(material2);
         sprite.scale.set(130,150,100);
